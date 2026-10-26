@@ -87,7 +87,9 @@ run.cmd
 - `spring.sql.init.mode=always` 使 Spring 启动时执行建表 SQL。`CREATE TABLE IF NOT EXISTS` 可以避免已有表重复创建，但不等于完整的数据库版本迁移工具。
 - 数据库本身需要预先存在，账号也需要相应权限；`schema.sql` 不能在连接尚未成功时凭空创建可连接的数据源。
 - `TestAccountSeeder` 只在配置允许且账号不存在时初始化 `admin`、`zhangsan`；这两个名字没有对应到不同的管理员 / 普通用户权限实现。
+- 这两个工作台演示账号的默认密码为 `HomeworkDemo!2026`，仅用于本机演示。首次启动前可通过 `app.auth.initial-password` 覆盖；修改配置只影响以后新建的演示账号，不会重置已有账号的密码，也不会修改 MySQL 连接密码。
 - 默认服务只监听 `127.0.0.1:8080`；当前配置面向本机使用。
+- 上一条只约束工作台 HTTP 服务；MySQL 的监听地址、数据库账号允许的来源和防火墙规则需单独设置。公开的演示密码不应复用为数据库密码。
 
 **源码：**[启动脚本](../../run.cmd)、[通用配置](../../src/main/resources/application.yml)、[账号初始化](../../src/main/java/cn/example/config/TestAccountSeeder.java)、[表结构](../../src/main/resources/schema.sql)。
 

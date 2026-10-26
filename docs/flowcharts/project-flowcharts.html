@@ -506,7 +506,9 @@ article a{overflow-wrap:anywhere}#dialog-content svg{min-width:0!important}
 <li><code>spring.sql.init.mode=always</code> 使 Spring 启动时执行建表 SQL。<code>CREATE TABLE IF NOT EXISTS</code> 可以避免已有表重复创建，但不等于完整的数据库版本迁移工具。</li>
 <li>数据库本身需要预先存在，账号也需要相应权限；<code>schema.sql</code> 不能在连接尚未成功时凭空创建可连接的数据源。</li>
 <li><code>TestAccountSeeder</code> 只在配置允许且账号不存在时初始化 <code>admin</code>、<code>zhangsan</code>；这两个名字没有对应到不同的管理员 / 普通用户权限实现。</li>
+<li>这两个工作台演示账号的默认密码为 <code>HomeworkDemo!2026</code>，仅用于本机演示。首次启动前可通过 <code>app.auth.initial-password</code> 覆盖；修改配置只影响以后新建的演示账号，不会重置已有账号的密码，也不会修改 MySQL 连接密码。</li>
 <li>默认服务只监听 <code>127.0.0.1:8080</code>；当前配置面向本机使用。</li>
+<li>上一条只约束工作台 HTTP 服务；MySQL 的监听地址、数据库账号允许的来源和防火墙规则需单独设置。公开的演示密码不应复用为数据库密码。</li>
 </ul>
 <p><strong>源码：</strong><a href="../../run.cmd">启动脚本</a>、<a href="../../src/main/resources/application.yml">通用配置</a>、<a href="../../src/main/java/cn/example/config/TestAccountSeeder.java">账号初始化</a>、<a href="../../src/main/resources/schema.sql">表结构</a>。</p>
 <h2 id="section-3">04 · 工作台登录、Session 与接口保护</h2><div class="diagram" data-diagram="03-session"><div class="diagram-toolbar"><span>流程图 · 可横向滚动查看</span><button type="button" class="expand-diagram" data-id="03-session">放大查看</button></div><div class="diagram-scroll"><svg role="img" aria-label="工作台登录与会话" style="min-width:994px" width="994pt" height="1185pt"

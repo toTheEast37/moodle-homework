@@ -14,7 +14,7 @@ public class TestAccountSeeder {
     @Order(1)
     ApplicationRunner seedTestAccounts(AppUserRepository users, PasswordHasher passwordHasher,
                                        @Value("${app.auth.seed-test-users:true}") boolean seedEnabled,
-                                       @Value("${app.auth.initial-password:123456}") String initialPassword) {
+                                       @Value("${app.auth.initial-password:HomeworkDemo!2026}") String initialPassword) {
         return args -> {
             if (!seedEnabled) return;
             for (String username : new String[]{"admin", "zhangsan"}) {

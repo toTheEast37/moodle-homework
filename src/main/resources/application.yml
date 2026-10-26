@@ -26,4 +26,4 @@ server:
 app:
   auth:
     seed-test-users: true
-    initial-password: "123456"
+    initial-password: "HomeworkDemo!2026"
