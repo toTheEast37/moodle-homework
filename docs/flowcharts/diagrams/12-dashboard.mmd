@@ -1,0 +1,30 @@
+flowchart TB
+  a(["showApp<br/>加载凭据 → 立即 refresh → 每秒定时"])
+  b{"polling 为 true？"}
+  c(["本次跳过，避免请求重叠"])
+  d["保存 sessionGeneration<br/>GET /api/status?credentialId=..."]
+  e{"响应仍属于当前会话代次？"}
+  f(["丢弃旧会话迟到响应"])
+  h{"401？"}
+  i(["showLogin：清空数据 / 密码框<br/>停止定时器"])
+  j["读取 snapshot.results<br/>每个来源一份有效快照"]
+  k["Map 合并：平台 + 凭据 + 课程 ID"]
+  l["若 running，再用本轮已读课程<br/>覆盖相同课程键"]
+  m["展开作业<br/>按课程复合键 + 作业 ID 去重"]
+  n["计算截止时间桶 + 排序"]
+  o["平台 AND 关键词 AND 截止条件"]
+  p(["渲染总待办 / 课程 / 平台状态<br/>缓存渲染键，减少重复 DOM 更新"])
+  a --> b
+  b -->|"是"| c
+  b -->|"否"| d
+  d --> e
+  e -->|"否"| f
+  e -->|"是"| h
+  h -->|"是"| i
+  h -->|"否且请求成功"| j
+  j --> k
+  k --> l
+  l --> m
+  m --> n
+  n --> o
+  o --> p

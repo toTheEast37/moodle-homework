@@ -1,0 +1,36 @@
+flowchart TB
+  a(["AssignmentCollector.collect(page, course)"])
+  b["访问 /course/overview.php<br/>携带课程 id 与 assign 展开参数"]
+  c["校验 HTTP + stateready<br/>域名 / 路径 / URL 课程编号"]
+  d{"存在 #assign_overview_collapsible？"}
+  e["返回空列表<br/>课程结果 empty"]
+  f["未展开则点击展开<br/>等待表格出现 + loading 隐藏"]
+  h{"出现未知分页结构？"}
+  x["抛出解析 / 访问异常<br/>该门课程 error，继续下一门"]
+  i["校验名称列与作业行结构"]
+  j["逐行读取 cmid / 标题 / href"]
+  k{"编号与 /mod/assign/view.php 链接一致？"}
+  l["读取 deadlineRaw<br/>有正秒级时间戳则转上海时区"]
+  m["按作业 ID 去重<br/>返回 Assignment 列表"]
+  n["生成 ok 或 empty 的 CourseResult"]
+  o(["写 course-ID.json → 加入 results<br/>更新 summary.json → 发布进度"])
+  a --> b
+  b --> c
+  c -->|"通过"| d
+  c -->|"失败"| x
+  d -->|"否"| e
+  e --> n
+  d -->|"是"| f
+  f --> h
+  h -->|"是"| x
+  h -->|"否"| i
+  i -->|"结构正确"| j
+  i -->|"结构变化"| x
+  j --> k
+  k -->|"否"| x
+  k -->|"是"| l
+  l -->|"所有行读完"| m
+  l -->|"时间戳非法"| x
+  m --> n
+  n --> o
+  x -->|"生成 error 的 CourseResult"| o

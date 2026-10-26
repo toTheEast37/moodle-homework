@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f6f5">
+  <title>课间 · 课程作业助手</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">跳到主要内容</a>
+  <section id="loginScreen" class="login-screen" hidden>
+    <form id="loginForm" class="login-card">
+      <span class="brand-mark" aria-hidden="true">课</span>
+      <p class="login-kicker">课间 / 课程作业助手</p>
+      <h1>给作业，一个好安排。</h1>
+      <p class="intro">登录本机账号，在一个地方查看砺儒云课堂与学者网的作业。</p>
+      <label for="loginUsername">用户名</label>
+      <input id="loginUsername" name="username" autocomplete="username" required>
+      <label for="loginPassword">密码</label>
+      <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+      <p id="loginError" class="login-error" role="alert"></p>
+      <button id="loginButton" class="primary-button" type="submit">进入我的工作台</button>
+      <p class="login-hint">使用管理员提供的本机账号，与作业平台账号分开。</p>
+    </form>
+  </section>
+  <div id="appShell" class="shell" hidden>
+    <aside class="sidebar" aria-label="工作台导航">
+      <a class="brand" href="/" aria-label="课间首页"><span class="brand-mark" aria-hidden="true">课</span><span>课间<small>课程作业助手</small></span></a>
+      <nav class="side-nav">
+        <a class="nav-link active" href="#overview"><span aria-hidden="true">▦</span>总待办<span class="nav-count" id="navTodoCount">0</span></a>
+        <a class="nav-link" href="#courses"><span aria-hidden="true">▤</span>按课程查看</a>
+        <a class="nav-link" id="accountsNav" href="#accounts"><span aria-hidden="true">⚙</span>账号与采集</a>
+      </nav>
+      <div class="sidebar-note"><span class="local-dot"></span>本机工作台<p>两个学习平台<br>一个作业清单</p></div>
+      <div class="sidebar-user"><span class="user-avatar" aria-hidden="true">我</span><span id="currentAppUser" class="current-user"></span><button id="logoutButton" class="text-button" type="button">退出</button></div>
+    </aside>
+    <main id="mainContent">
+      <header class="topbar"><span class="breadcrumb">我的工作台 <span>/</span> 作业总览</span><span id="todayLabel" class="today-label"></span></header>
+      <section class="hero" id="overview">
+        <div class="hero-copy"><p class="greeting">学习有条理，课间更轻松</p><h1>今天的作业，一起安排。</h1><p class="intro">砺儒云课堂与学者网的作业都在这里，先从最近截止的开始。</p></div>
+        <a id="collectShortcut" class="primary-button" href="#accounts"><span aria-hidden="true">↻</span> 更新作业</a>
+      </section>
+      <section class="metrics" aria-label="全部平台采集汇总">
+        <article class="metric-card metric-week"><span class="metric-label">7 天内截止</span><strong id="weekMetric">—</strong><span class="metric-hint">优先安排</span></article>
+        <article class="metric-card metric-fortnight"><span class="metric-label">8–14 天截止</span><strong id="fortnightMetric">—</strong><span class="metric-hint">提前准备</span></article>
+        <article class="metric-card"><span class="metric-label">已采集作业</span><strong id="assignmentMetric">—</strong><span class="metric-hint">两个平台汇总</span></article>
+        <article class="metric-card"><span class="metric-label">课程</span><strong id="courseMetric">—</strong><span id="courseMetricHint" class="metric-hint">等待采集</span></article>
+        <article class="metric-card"><span class="metric-label">无作业课程</span><strong id="emptyMetric">—</strong><span class="metric-hint">已检查的课程</span></article>
+        <article class="metric-card"><span class="metric-label">采集失败课程</span><strong id="errorMetric">—</strong><span class="metric-hint">可在课程中查看</span></article>
+      </section>
+      <div class="overview-grid">
+        <section class="panel todo-panel" aria-labelledby="todoHeading">
+          <div class="panel-heading"><div><h2 id="todoHeading">总待办<span class="heading-dot"></span></h2><p class="section-note">汇总所有账号，按截止时间排列。</p></div><span id="todoCount" class="count-chip">0 项</span></div>
+          <div id="platformFilters" class="segmented" role="group" aria-label="按平台筛选">
+            <button type="button" class="filter-button active" data-site="all" aria-pressed="true">全部平台</button>
+            <button type="button" class="filter-button" data-site="scnu-moodle" aria-pressed="false">砺儒云课堂</button>
+            <button type="button" class="filter-button" data-site="scholat" aria-pressed="false">学者网</button>
+          </div>
+          <div class="todo-toolbar"><div class="search-field"><span aria-hidden="true">⌕</span><input id="todoSearch" type="search" aria-label="搜索作业、课程或账号" placeholder="搜索作业、课程或账号"></div><select id="todoDeadlineFilter" aria-label="按截止时间筛选"><option value="upcoming">未过期与无截止时间</option><option value="all">全部作业</option><option value="week">7 天内截止</option><option value="fortnight">8–14 天截止</option><option value="overdue">已过截止时间</option><option value="none">无截止时间</option></select></div>
+          <p class="data-notice">仅采集作业与截止时间，未读取提交状态；“总待办”不代表均未提交。</p>
+          <div id="todoList" class="todo-list" aria-live="polite"></div>
+          <p id="todoSummary" class="todo-summary"></p>
+        </section>
+        <aside class="overview-aside" aria-label="平台与近期安排">
+          <section class="panel source-panel"><div class="panel-heading"><h2>平台概览</h2><span class="subtle-label">独立保存 · 合并查看</span></div><div id="platformSummary" class="platform-summary"></div></section>
+          <section class="upcoming-section" aria-label="未来14天的作业截止时间">
+            <div class="upcoming-heading"><h2>近期安排</h2><span class="calendar-symbol" aria-hidden="true">▦</span></div>
+            <div class="deadline-grid">
+              <article class="deadline-bucket deadline-bucket-week"><div class="bucket-heading"><div><span class="bucket-dot"></span><h3>7 天内</h3></div><span id="weekCount" class="bucket-count">0</span></div><div id="weekAssignments" class="deadline-list"></div></article>
+              <article class="deadline-bucket deadline-bucket-fortnight"><div class="bucket-heading"><div><span class="bucket-dot"></span><h3>8–14 天</h3></div><span id="fortnightCount" class="bucket-count">0</span></div><div id="fortnightAssignments" class="deadline-list"></div></article>
+            </div>
+            <p id="clockNow" class="clock-note">按北京时间计算</p>
+          </section>
+        </aside>
+      </div>
+      <section id="courses" class="courses-section" aria-label="课程与作业"><div class="section-heading"><h2>按课程查看</h2><span class="section-note">保留每门课的完整采集结果</span></div><div class="workspace">
+        <aside class="panel course-panel"><div class="panel-heading"><h3>全部课程</h3><span id="courseListCount" class="count-chip">0</span></div><div id="courseList" class="course-list"></div></aside>
+        <section class="panel assignment-panel"><div class="panel-heading assignment-heading"><h3 id="assignmentHeading">作业列表</h3><span id="assignmentCount" class="count-chip">0 项</span></div><div id="assignmentContent" class="assignment-content"></div></section>
+      </div></section>
+      <details id="accounts" class="panel credential-panel">
+        <summary class="account-summary"><div><h2>账号与采集</h2><p class="section-note">绑定平台账号，或更新已保存的作业</p></div><span id="credentialCount" class="count-chip">0 个账号</span><span class="disclosure-icon" aria-hidden="true">⌄</span></summary>
+        <div class="account-body">
+          <p class="credential-note">账号选择仅用于采集，总待办始终汇总全部账号。砺儒云课堂支持手动登录；学者网使用绑定账号登录。</p>
+          <div id="credentialList" class="credential-list" aria-live="polite"></div>
+          <div class="credential-picker"><label for="credentialSelect">采集账号</label><select id="credentialSelect" aria-label="选择已绑定的作业网站账号"></select></div>
+          <form id="credentialForm" class="credential-form">
+            <input id="credentialId" type="hidden">
+            <div class="credential-field"><label for="credentialSite">作业网站</label><select id="credentialSite"><option value="scnu-moodle">砺儒云课堂</option><option value="scholat">学者网</option></select></div>
+            <div class="credential-field"><label for="credentialLabel">账号备注</label><input id="credentialLabel" maxlength="100" placeholder="例如：我的学校账号"></div>
+            <div class="credential-field"><label for="credentialUsername">平台账号</label><input id="credentialUsername" maxlength="128" autocomplete="username"></div>
+            <div class="credential-field"><label for="credentialPassword">平台密码</label><input id="credentialPassword" type="password" maxlength="1024" autocomplete="new-password" placeholder="新增时填写；编辑留空可保留密码"></div>
+            <div class="credential-form-actions"><button id="startButton" class="primary-button" type="submit"><span id="startButtonText">绑定账号并自动登录</span></button><button id="manualLoginButton" class="secondary-button" type="button">手动登录并采集</button><button id="credentialCancel" class="text-button" type="button" hidden>取消编辑</button><span id="credentialMessage" class="credential-message" role="status"></span></div>
+          </form>
+        </div>
+      </details>
+      <section class="status-card" aria-live="polite"><div class="status-heading"><span id="statusDot" class="status-dot"></span><div><div id="statusTitle" class="status-title">等待开始</div><div id="statusMessage" class="status-message">展开“账号与采集”，更新平台作业。</div></div><span id="statusBadge" class="status-badge">未开始</span></div><progress id="progressBar" class="progress-track" max="100" value="0" aria-label="采集进度"></progress><div class="progress-meta"><span id="progressText">准备就绪</span><span id="currentCourse"></span></div></section>
+      <footer class="footer"><span>课间 · 留点时间给自己</span><span id="snapshotInfo" class="output-path">暂无已保存的采集结果。</span><span id="outputDirectory" class="output-path"></span></footer>
+    </main>
+  </div>
+</body>
+</html>

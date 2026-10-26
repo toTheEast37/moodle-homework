@@ -1,0 +1,26 @@
+flowchart TB
+  a(["采集器产生 Progress"])
+  b["回调更新内存 progress<br/>然后 UPDATE site_collection_run"]
+  c["写 status / progress_json<br/>按 runId + owner_user_id 限定"]
+  d{"stage 为 completed / partial？"}
+  e["result_json = 本轮 Progress<br/>finished_at = 当前时间"]
+  f{"stage 为 error？"}
+  h["记录错误和 finished_at<br/>本次不写新 result_json"]
+  i["运行中：只更新进度"]
+  j["状态查询：只选 result_json 非空的记录"]
+  k["按用户 + 平台 + 账号分组<br/>取 finished_at 最大，平局取 id 最大"]
+  l(["返回各账号最近有效 ResultSnapshot"])
+  m[("独立文件输出：完整 JSON → .tmp<br/>优先 ATOMIC_MOVE 替换目标")]
+  a --> b
+  b --> c
+  c --> d
+  d -->|"是"| e
+  d -->|"否"| f
+  f -->|"是"| h
+  f -->|"否"| i
+  e --> j
+  h --> j
+  i --> j
+  j --> k
+  k --> l
+  a -.->|"采集器另行写文件；不与 SQL 共享事务"| m

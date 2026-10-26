@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: moodle-homework
+  profiles:
+    default: dev
+  sql:
+    init:
+      mode: always
+  web:
+    resources:
+      static-locations: classpath:/web/
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  address: 127.0.0.1
+  port: 8080
+  servlet:
+    session:
+      timeout: 12h
+      cookie:
+        http-only: true
+        same-site: strict
+
+app:
+  auth:
+    seed-test-users: true
+    initial-password: "123456"

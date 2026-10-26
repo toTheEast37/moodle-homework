@@ -1,0 +1,36 @@
+flowchart TB
+  a(["启动有界面 Edge<br/>新 BrowserContext / zh-CN / 上海时区"])
+  b["访问 /my/index.php"]
+  c{"检测到 Moodle 已登录页面标记？"}
+  d{"有自动登录凭据？"}
+  e["waiting_login<br/>手动登录最多等待 300 秒"]
+  f["访问 /login/index.php<br/>点击 #ssobtn"]
+  h["等待进入 sso.scnu.edu.cn"]
+  i{"当前为账号密码登录页？"}
+  j["在主页面和 iframe 中寻找<br/>唯一可见账号框 + 密码框"]
+  k["填账号密码 → 唯一登录按钮<br/>等待 Moodle 或 SSO 授权页"]
+  l{"当前为 SSO 授权页？"}
+  m["点击首个可见 gotoApp 确认链接"]
+  n["自动模式等待 Moodle 登录标记<br/>最多 60 秒"]
+  o(["进入完整课程目录读取"])
+  x["超时 / 表单不唯一 / 页面变化<br/>抛错，由协调器登记 error"]
+  a --> b
+  b --> c
+  c -->|"是"| o
+  c -->|"否"| d
+  d -->|"否"| e
+  e -->|"登录标记出现"| o
+  d -->|"是"| f
+  f --> h
+  h --> i
+  i -->|"是"| j
+  j --> k
+  k --> l
+  i -->|"否"| l
+  l -->|"是"| m
+  m --> n
+  l -->|"否"| n
+  n -->|"标记出现"| o
+  j -->|"定位失败"| x
+  e -->|"超时"| x
+  n -->|"超时"| x

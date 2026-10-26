@@ -1,0 +1,29 @@
+flowchart TB
+  a(["POST /api/login<br/>工作台 username / password"])
+  b{"Origin 与请求协议 / 主机 / 端口一致？"}
+  x["403 拒绝"]
+  c{"必要字段存在？"}
+  y["400 参数错误"]
+  d["查询 enabled=true 的 app_user"]
+  e{"找到用户且 PBKDF2 校验一致？"}
+  z["401：账号或密码不正确"]
+  f["创建或取得 HttpSession<br/>changeSessionId()"]
+  h["保存 AuthSession(userId, username)"]
+  i["浏览器携带会话 Cookie 请求受保护接口"]
+  j{"拦截器检查 Session 中 AuthSession"}
+  k(["进入 Controller<br/>后续按 userId 隔离数据"])
+  l(["POST /api/logout<br/>校验 Origin → invalidate Session"])
+  a --> b
+  b -->|"否"| x
+  b -->|"是"| c
+  c -->|"否"| y
+  c -->|"是"| d
+  d --> e
+  e -->|"否"| z
+  e -->|"是"| f
+  f --> h
+  h --> i
+  i --> j
+  j -->|"无会话"| z
+  j -->|"有会话"| k
+  k -->|"用户退出"| l

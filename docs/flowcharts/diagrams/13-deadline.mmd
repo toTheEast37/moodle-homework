@@ -1,0 +1,32 @@
+flowchart TB
+  a(["assignment.deadline"])
+  b{"严格匹配 yyyy-MM-dd？"}
+  c["学者网日期型<br/>按上海今天的年月日比较"]
+  d["days = 截止日期 − 今天<br/>仅比较日历日期"]
+  e{"Date.parse 可得到有效时刻？"}
+  f["Moodle 时刻型<br/>remainingMs = dueMs − nowMs"]
+  h["none：时间待确认<br/>不猜年份或截止时刻"]
+  i["overdue：已过期<br/>日期型 days < 0 / 时刻型剩余 < 0"]
+  j["week：未过期且 ≤ 7 天"]
+  k["fortnight：> 7 且 ≤ 14 天"]
+  l["later：> 14 天"]
+  m(["日期型今天仍是“今天截止”<br/>默认 upcoming = 除 overdue 外全部"])
+  a --> b
+  b -->|"是"| c
+  c --> d
+  b -->|"否"| e
+  e -->|"是"| f
+  e -->|"否"| h
+  d -->|"< 0 天"| i
+  d -->|"0～7 天"| j
+  d -->|"8～14 天"| k
+  d -->|"> 14 天"| l
+  f -->|"< 0"| i
+  f -->|"≤ 7 天且未过期"| j
+  f -->|"> 7 且 ≤ 14 天"| k
+  f -->|"> 14 天"| l
+  i --> m
+  j --> m
+  k --> m
+  l --> m
+  h --> m

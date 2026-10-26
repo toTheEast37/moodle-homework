@@ -1,0 +1,23 @@
+flowchart TB
+  a(["GET /api/status<br/>所选来源没有数据库有效结果"])
+  b{"来源是 Moodle？"}
+  c{"账号归属可以无歧义判断？"}
+  x(["不导入，照常返回现有状态"])
+  d["扫描 output/user-ID/run-*<br/>按 summary 修改时间倒序"]
+  e{"summary 为 completed / partial？"}
+  f["读课程文件<br/>校验规范化路径位于运行目录内"]
+  h{"至少读到一门课程？"}
+  i["再次检查数据库没有有效结果<br/>插入 run_mode=legacy 快照"]
+  j(["重新查询数据库 → 返回状态"])
+  a --> b
+  b -->|"否"| x
+  b -->|"是"| c
+  c -->|"否"| x
+  c -->|"是"| d
+  d --> e
+  e -->|"没有可用轮次"| x
+  e -->|"是"| f
+  f --> h
+  h -->|"否"| x
+  h -->|"是"| i
+  i --> j

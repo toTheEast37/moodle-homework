@@ -1,0 +1,36 @@
+flowchart TB
+  a(["CourseCatalog.findCourses<br/>访问个人课程页并校验 HTTP"])
+  b["等待当前页可见且有课程 / 空标志"]
+  c["记录原分组 / 排序 / 显示方式"]
+  d["改为 fullname 稳定排序 + card 显示"]
+  e["依次处理 all 和 hidden 分组"]
+  f["切换分组后等待新列表容器<br/>返回第 1 页"]
+  h{"页码已访问或超过 1000 页？"}
+  x["停止并抛错<br/>不能宣称目录读取完整"]
+  i["只解析 active-page-number 对应容器"]
+  j["校验课程 ID / 链接 / 标题<br/>LinkedHashMap 按 courseId 去重"]
+  k{"下一页控件存在且唯一？"}
+  l{"下一页已禁用？"}
+  m["点击下一页<br/>等待页码改变 + 当前内容就绪"]
+  n{"还有另一分组？"}
+  o["返回 Catalog(courses, pagesRead)"]
+  p(["finally 尝试恢复原显示偏好<br/>恢复失败仅记录提示"])
+  a --> b
+  b --> c
+  c --> d
+  d --> e
+  e --> f
+  f --> h
+  h -->|"是"| x
+  h -->|"否"| i
+  i --> j
+  j --> k
+  k -->|"否"| x
+  k -->|"是"| l
+  l -->|"否"| m
+  m --> h
+  l -->|"是"| n
+  n -->|"是"| f
+  n -->|"否"| o
+  o --> p
+  x -->|"退出前也尝试恢复"| p

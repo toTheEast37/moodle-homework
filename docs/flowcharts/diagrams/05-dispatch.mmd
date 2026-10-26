@@ -1,0 +1,34 @@
+flowchart TB
+  a(["CollectorCoordinator.start(user, id, mode)"])
+  b["取得 states[userId]<br/>同一用户共用 UserState"]
+  c{"CAS：running 从 false 改为 true？"}
+  d["409：已有一轮运行"]
+  e["检查凭据属于当前用户<br/>验证 auto / manual 与平台支持"]
+  f{"参数或解密失败？"}
+  x["running=false<br/>关闭已取得的明文凭据并抛错"]
+  h["创建 site_collection_run<br/>初始 opening_browser"]
+  i["保存 activeCredentialId / 初始进度"]
+  j["启动 daemon 后台线程<br/>HTTP 返回当前状态"]
+  k{"siteCode == scholat？"}
+  l["ScholatHomework.run<br/>绑定账号自动登录"]
+  m["MoodleHomework.run<br/>有凭据自动 / 无凭据手动"]
+  n["Progress 回调<br/>AtomicReference.set → 更新数据库"]
+  o["异常由协调器登记<br/>已有 partial 则保留，否则 error"]
+  p(["finally：清空密码 char[]<br/>running=false，允许下一轮"])
+  a --> b
+  b --> c
+  c -->|"否"| d
+  c -->|"是"| e
+  e --> f
+  f -->|"是"| x
+  f -->|"否"| h
+  h --> i
+  i --> j
+  j -->|"后台执行"| k
+  k -->|"是"| l
+  k -->|"否"| m
+  l -->|"每次回调"| n
+  m -->|"每次回调"| n
+  n -->|"发生异常"| o
+  n -->|"正常完成"| p
+  o --> p

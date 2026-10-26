@@ -1,0 +1,98 @@
+{
+  "checkedAt": "2026-10-26T15:02:02.276Z",
+  "browser": "Installed Microsoft Edge, headless via Playwright",
+  "diagrams": 16,
+  "headings": 21,
+  "navLinks": 21,
+  "brokenLinks": [],
+  "textOverflows": [],
+  "overlappingLabels": [],
+  "externalRequests": [],
+  "errors": [],
+  "desktopOverflow": false,
+  "mobileOverflow": false,
+  "overflowElements": [],
+  "unresolved": false,
+  "interactions": [
+    {
+      "id": "01-architecture",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "02-overall",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "03-session",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "04-credentials",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "05-dispatch",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "06-moodle-login",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "07-catalog",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "08-moodle-assignments",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "09-scholat",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "10-states",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "11-persistence",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "12-dashboard",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "13-deadline",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "14-failures",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "16-data-model",
+      "zoomWorks": true,
+      "closed": true
+    },
+    {
+      "id": "15-legacy",
+      "zoomWorks": true,
+      "closed": true
+    }
+  ]
+}

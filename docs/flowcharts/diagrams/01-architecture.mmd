@@ -1,0 +1,23 @@
+flowchart TB
+  ui["工作台网页<br/>HTML / CSS / app.js"]
+  api["Controller + 登录拦截<br/>会话、账号、状态、启动"]
+  svc["Service<br/>凭据管理 / CollectorCoordinator"]
+  repo["Repository / JdbcTemplate<br/>带 owner_user_id 的 SQL"]
+  db[("MySQL<br/>用户 / 密钥 / 凭据 / 运行快照")]
+  worker["每用户后台守护线程<br/>进度回调 / 单轮采集"]
+  pw["Playwright → 独立 Edge<br/>临时 BrowserContext"]
+  moodle["Moodle + 学校 SSO<br/>课程目录 / 作业活动汇总"]
+  scholat["学者网<br/>我的课程 / 作业动态"]
+  files[("output/ 历史 JSON<br/>每轮目录 / 每门课程文件")]
+  ui -->|"同源 HTTP / Session Cookie"| api
+  api -->|"身份和参数"| svc
+  svc -->|"读写"| repo
+  repo -->|"SQL"| db
+  svc -->|"启动后立即返回状态"| worker
+  worker -->|"浏览器自动化"| pw
+  pw -->|"登录 / 读取 DOM"| moodle
+  pw -->|"登录 / 读取 DOM"| scholat
+  worker -.->|"Progress 回调"| svc
+  worker -->|"导出"| files
+  svc -.->|"ApiSnapshot"| api
+  api -.->|"前端每秒轮询"| ui

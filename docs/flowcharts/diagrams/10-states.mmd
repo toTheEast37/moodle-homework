@@ -1,0 +1,21 @@
+flowchart LR
+  a(["idle<br/>仅内存初始状态"])
+  b["opening_browser"]
+  c["waiting_login<br/>若已登录可跳过"]
+  d["reading_courses"]
+  e["collecting<br/>可多次回调"]
+  f(["completed<br/>写有效快照"])
+  h(["partial<br/>Moodle 有失败课程<br/>写有效快照"])
+  i["error<br/>整轮失败<br/>通常不产生新有效快照"]
+  a -->|"有效启动"| b
+  b -->|"需要登录"| c
+  b -->|"已登录"| d
+  c -->|"登录成功"| d
+  d -->|"目录就绪"| e
+  e -->|"逐课程"| e
+  e -->|"全部成功"| f
+  e -->|"Moodle 失败课程 > 0"| h
+  b -->|"异常"| i
+  c -->|"异常"| i
+  d -->|"异常"| i
+  e -->|"整轮异常"| i

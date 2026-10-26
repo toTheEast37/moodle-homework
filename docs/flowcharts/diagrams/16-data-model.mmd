@@ -1,0 +1,15 @@
+flowchart LR
+  u[("app_user<br/>PK id / UNIQUE username<br/>password_hash / enabled")]
+  key[("extractor_credential_key<br/>PK + FK owner_user_id<br/>encryption_key BINARY(32)")]
+  cred[("site_login_credential<br/>PK id / FK owner_user_id<br/>site_code / login_username<br/>nonce / ciphertext")]
+  run[("site_collection_run<br/>PK id / FK owner_user_id<br/>nullable FK site_credential_id<br/>status / progress_json / result_json")]
+  progress["Progress JSON<br/>stage / counts / currentCourse<br/>outputDirectory / courses[]"]
+  course["CourseResult<br/>courseId / courseName / status<br/>assignmentCount / error / assignments[]"]
+  assignment["Assignment<br/>id / title / url<br/>deadlineRaw / deadline"]
+  u -->|"1 → 0..1"| key
+  u -->|"1 → 0..N"| cred
+  u -->|"1 → 0..N"| run
+  cred -->|"1 → 0..N；运行可不绑定凭据"| run
+  run -->|"JSON 列序列化"| progress
+  progress -->|"包含 0..N"| course
+  course -->|"包含 0..N"| assignment
