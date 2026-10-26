@@ -12,6 +12,8 @@
 
 ![按课程查看作业](docs/screenshots/course-view.png)
 
+![平台账号与采集设置](docs/screenshots/accounts-and-collection.png)
+
 ## 环境要求
 
 - Windows，安装 JDK 17。

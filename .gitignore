@@ -19,6 +19,3 @@
 *.log
 /playwright-report/
 /test-results/
-
-# Original screenshot contains a personal platform account identifier
-/docs/screenshots/accounts-and-collection.png
